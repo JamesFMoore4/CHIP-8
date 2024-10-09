@@ -2,7 +2,7 @@
 
 typedef struct stack_s
 {
-  uint16_t buf[MAX_STACK_SIZE];
+  ptr buf[MAX_STACK_SIZE];
   int top, num_items;
 } stack_s;
 
@@ -16,9 +16,9 @@ stack_s* stack_init()
   return stack;
 }
 
-uint16_t stack_pop(stack_s* stack)
+ptr stack_pop(stack_s* stack)
 {
-  uint16_t addr;
+  ptr addr;
   
   if (!stack->num_items)
     error("error: stack underflow.\n", 1);
@@ -29,7 +29,7 @@ uint16_t stack_pop(stack_s* stack)
   return addr;
 }
 
-uint16_t stack_peek(stack_s* stack)
+ptr stack_peek(stack_s* stack)
 {
   if (!stack->num_items)
     error("error: stack underflow.\n", 1);
@@ -37,10 +37,12 @@ uint16_t stack_peek(stack_s* stack)
   return stack->buf[stack->top];
 }
 
-void stack_push(stack_s* stack, uint16_t addr)
+void stack_push(stack_s* stack, ptr addr)
 {
   if (stack->num_items == MAX_STACK_SIZE)
     error("error: stack overflow.\n", 1);
+
+  check_addr(addr, "error: attempted to push invalid address to stack.");
 
   stack->buf[++stack->top] = addr;
   stack->num_items++;

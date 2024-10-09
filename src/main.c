@@ -25,16 +25,16 @@ int main(int argc, char** argv)
   if (!(file = fopen(argv[1], "rb")))
     error("error: file not found.", 1);
 
-  // read file contents into CHIP-8 RAM
+  stack = stack_init();
+  rfile = rfile_init();
+  memory = memory_init();
+
+  memory_map_file(memory, file);
   
   fclose(file);
   
   InitWindow(SCR_WIDTH, SCR_HEIGHT, "CHIP-8");
   SetTargetFPS(60);
-
-  stack = stack_init();
-  rfile = rfile_init();
-  memory = memory_init();
 
   while (!WindowShouldClose())
   {

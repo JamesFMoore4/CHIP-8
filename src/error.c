@@ -29,3 +29,9 @@ void* Calloc(size_t nmemb, size_t size)
     sys_error("calloc error", 1);
   return mem;
 }
+
+void check_addr(ptr addr, char* msg)
+{
+  if (addr & 0xF000)
+    error(msg, 1);
+}

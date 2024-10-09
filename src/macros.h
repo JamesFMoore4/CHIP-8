@@ -21,5 +21,6 @@
 
 typedef uint8_t byte;
 typedef uint16_t ptr;
+typedef uint16_t instr;
 
 #endif

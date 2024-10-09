@@ -14,7 +14,7 @@ void memory_free(memory_s* memory);
 ptr memory_read_instruction(memory_s* memory, ptr addr);
 byte memory_read_byte(memory_s* memory, ptr addr);
 
-void memory_write(memory_s* memory, byte byte);
+void memory_write(memory_s* memory, ptr addr, byte val);
 void memory_map_file(memory_s* memory, FILE* bin);
 
 #endif
