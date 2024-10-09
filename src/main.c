@@ -6,11 +6,13 @@
 #include "stack.h"
 #include "macros.h"
 #include "display.h"
+#include "register.h"
 
 int main(int argc, char** argv)
 {
   FILE* file;
   stack_s* stack;
+  rfile_s* rfile;
 
   if (argc != 2)
   {
@@ -29,6 +31,7 @@ int main(int argc, char** argv)
   SetTargetFPS(60);
 
   stack = stack_init();
+  rfile = rfile_init();
 
   while (!WindowShouldClose())
   {
@@ -37,6 +40,7 @@ int main(int argc, char** argv)
   
   CloseWindow();
   stack_free(stack);
+  rfile_free(rfile);
 
   return 0;
 }
