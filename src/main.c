@@ -7,12 +7,14 @@
 #include "macros.h"
 #include "display.h"
 #include "register.h"
+#include "memory.h"
 
 int main(int argc, char** argv)
 {
   FILE* file;
   stack_s* stack;
   rfile_s* rfile;
+  memory_s* memory;
 
   if (argc != 2)
   {
@@ -32,6 +34,7 @@ int main(int argc, char** argv)
 
   stack = stack_init();
   rfile = rfile_init();
+  memory = memory_init();
 
   while (!WindowShouldClose())
   {
@@ -41,6 +44,7 @@ int main(int argc, char** argv)
   CloseWindow();
   stack_free(stack);
   rfile_free(rfile);
+  memory_free(memory);
 
   return 0;
 }

@@ -2,7 +2,7 @@ CC = gcc
 CLIBS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 CFLAGS = -Wall -Wextra
 BIN = chip8
-OBJECTS = main.o error.o stack.o display.o register.o
+OBJECTS = main.o error.o stack.o display.o register.o memory.o
 INCLUDE = -I ../include
 LIB = -L ../lib
 
