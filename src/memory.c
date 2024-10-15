@@ -30,6 +30,9 @@ typedef struct memory_s
   ptr font_start;
 } memory_s;
 
+static int system_is_little_endian(void);
+static void swap_bytes(instr* instruction);
+
 memory_s* memory_init()
 {
   memory_s* memory;
@@ -60,6 +63,10 @@ instr memory_read_instruction(memory_s* memory, ptr addr)
     error("error: invalid instruction address.", 1);
 
   fetch = (instr*) &memory->addrspace[addr]; // Fetch two bytes instead of one
+
+  // Make sure that bytes are in proper order
+  if (system_is_little_endian())
+    swap_bytes(fetch);
   
   return *fetch;
 }
@@ -84,9 +91,27 @@ void memory_load_file(memory_s* memory, FILE* bin)
   ptr addr;
 
   addr = memory->program_start;
-  while ((val = getc(bin)) != EOF && addr <= memory->last_byte)
+  while ((char)(val = getc(bin)) != EOF && addr <= memory->last_byte)
     memory->addrspace[addr++] = val;
 
   if (!feof(bin))
     error("error: input file too large.", 1);
+}
+
+static int system_is_little_endian(void)
+{
+  int test;
+
+  test = 1;
+  return *(char*)&test;
+}
+
+static void swap_bytes(instr* instruction)
+{
+  byte b1, b2;
+
+  b1 = (byte) *instruction;
+  b2 = *((byte*)instruction + 1);
+  *instruction = (instr) b2;
+  *((byte*)instruction + 1) = b1;
 }

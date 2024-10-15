@@ -1,6 +1,7 @@
 #include <raylib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "error.h"
 #include "stack.h"
@@ -9,23 +10,22 @@
 #include "register.h"
 #include "memory.h"
 #include "timer.h"
+#include "execute.h"
 
-static int keypad_map[] =
-{
-  KEY_X, KEY_ONE, KEY_TWO, KEY_THREE,
-  KEY_Q, KEY_W, KEY_E, KEY_A,
-  KEY_S, KEY_D, KEY_Z, KEY_C,
-  KEY_FOUR, KEY_R, KEY_F, KEY_V
-};
+extern execute_f exec[];
+
+static void objects_init(object_s* objects, FILE* bin);
+static void objects_free(object_s* objects);
+static instr fetch(memory_s* memory, rfile_s* rfile);
+static void decode(instruction_s* decoded_instr, instr instruction);
+static void execute(instruction_s* decoded_instr, object_s* objects);
 
 int main(int argc, char** argv)
 {
-  FILE* file;
-  stack_s* stack;
-  rfile_s* rfile;
-  memory_s* memory;
-  timer_s* timer_delay;
-  timer_s* timer_sound;
+  FILE* bin;
+  instr instruction;
+  instruction_s decoded_instr;
+  object_s objects;
 
   if (argc != 2)
   {
@@ -33,35 +33,82 @@ int main(int argc, char** argv)
     exit(0);
   }
 
-  if (!(file = fopen(argv[1], "rb")))
+  if (!(bin = fopen(argv[1], "rb")))
     error("error: file not found.", 1);
 
-  stack = stack_init();
-  rfile = rfile_init();
-  memory = memory_init();
-  timer_delay = timer_init(DELAY);
-  timer_sound = timer_init(SOUND);
+  // Must be called before initialization of sound timer
+  InitAudioDevice();
+  objects_init(&objects, bin);
   
-  memory_load_file(memory, file);
-  fclose(file);
+  fclose(bin);
   
   InitWindow(SCR_WIDTH, SCR_HEIGHT, "CHIP-8");
   SetTargetFPS(60);
-
+  
   while (!WindowShouldClose())
   {
-    // input()
-    // timer()
-    // fetch()
-    // decode()
-    // execute()
+    timer_update(objects.timer_sound);
+    timer_update(objects.timer_delay);
+    /* instruction = fetch(objects.memory, objects.rfile); */
+    /* decode(&decoded_instr, instruction); */
+    /* execute(&decoded_instr, &objects); */
     display_draw();
   }
   
+  objects_free(&objects);
+
+  CloseAudioDevice();
   CloseWindow();
-  stack_free(stack);
-  rfile_free(rfile);
-  memory_free(memory);
 
   return 0;
+}
+
+static void objects_init(object_s* objects, FILE* bin)
+{
+  objects->memory = memory_init();
+  objects->stack = stack_init();
+  objects->rfile = rfile_init();
+  objects->timer_delay = timer_init(DELAY);
+  objects->timer_sound = timer_init(SOUND);
+  memory_load_file(objects->memory, bin);
+}
+
+static void objects_free(object_s* objects)
+{
+  stack_free(objects->stack);
+  rfile_free(objects->rfile);
+  memory_free(objects->memory);
+  timer_free(objects->timer_delay);
+  timer_free(objects->timer_sound);
+}
+
+static instr fetch(memory_s* memory, rfile_s* rfile)
+{
+  instr instruction;
+  ptr addr;
+
+  addr = rfile_pc_read(rfile);
+  instruction = memory_read_instruction(memory, addr);
+  rfile_pc_write(rfile, addr + sizeof(addr));
+  return instruction;
+}
+
+static void decode(instruction_s* decoded_instr, instr instruction)
+{
+  byte b1, b2;
+
+  b1 = *((byte*)&instruction + 1);
+  b2 = (byte)instruction;
+
+  // These must be logical shifts, or bugs will occur
+  decoded_instr->n1 = (b1 & 0xF0) >> 4;
+  decoded_instr->n2 = b1 & 0xF;
+  decoded_instr->n3 = (b2 & 0xF0) >> 4;
+  decoded_instr->n4 = b2 & 0xF;
+}
+
+static void execute(instruction_s* decoded_instr, object_s* objects)
+{
+  assert(decoded_instr->n1 >= 0x0 && decoded_instr->n2 <= 0xF && "Invalid instruction code.");
+  exec[decoded_instr->n1](decoded_instr, objects);
 }

@@ -22,13 +22,15 @@ timer_s* timer_init(type_e type)
   timer->type = type;
   timer->val = 0;
   timer->update = timer_idle;
-  // load sound here
+  timer->sound = timer->type == SOUND ? LoadSound("../resources/sound.wav") : (Sound){0};
 
   return timer;
 }
 
 void timer_free(timer_s* timer)
 {
+  if (timer->type == SOUND)
+    UnloadSound(timer->sound);
   free(timer);
 }
 
@@ -54,7 +56,7 @@ static void timer_idle(timer_s* timer)
 
 static void timer_sound(timer_s* timer)
 {
-  // Play sound here
+  PlaySound(timer->sound);
   timer->val--;
   timer->update = timer->val ? timer_sound : timer_idle;
 }
