@@ -14,6 +14,7 @@
 
 #define MAX_RAM 4096
 #define PROGRAM_START_ADDR 0x200
+#define FONT_START_ADDR 0x50
 #define MAX_STACK_SIZE 16
 #define NUM_REGISTERS 16
 

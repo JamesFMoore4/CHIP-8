@@ -15,6 +15,6 @@ ptr memory_read_instruction(memory_s* memory, ptr addr);
 byte memory_read_byte(memory_s* memory, ptr addr);
 
 void memory_write(memory_s* memory, ptr addr, byte val);
-void memory_map_file(memory_s* memory, FILE* bin);
+void memory_load_file(memory_s* memory, FILE* bin);
 
 #endif
