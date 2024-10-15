@@ -10,6 +10,14 @@
 #include "memory.h"
 #include "timer.h"
 
+static int keypad_map[] =
+{
+  KEY_X, KEY_ONE, KEY_TWO, KEY_THREE,
+  KEY_Q, KEY_W, KEY_E, KEY_A,
+  KEY_S, KEY_D, KEY_Z, KEY_C,
+  KEY_FOUR, KEY_R, KEY_F, KEY_V
+};
+
 int main(int argc, char** argv)
 {
   FILE* file;

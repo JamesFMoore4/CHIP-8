@@ -14,5 +14,5 @@ $(BIN): $(OBJECTS)
 %.o: %.c
 	@$(CC) -c $^ -o $@
 clean:
-	@rm $(OBJECTS) $(BIN)
+	@rm $(OBJECTS) $(BIN) *~
 
