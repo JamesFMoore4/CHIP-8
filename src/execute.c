@@ -210,7 +210,8 @@ static void C(instruction_s* inst, object_s* o)
 
 static void D(instruction_s* inst, object_s* o)
 {
-  
+  display_draw_sprite(rfile_index_read(o->rfile), inst->n4, rfile_read(o->rfile, inst->n2),
+		      rfile_read(o->rfile, inst->n3), o->memory);
 }
 
 static void E(instruction_s* inst, object_s* o)
@@ -238,7 +239,8 @@ static void E(instruction_s* inst, object_s* o)
 
 static void F(instruction_s* inst, object_s* o)
 {
-  int key_press, index;
+  int key_press, index, offset, vx, i, val;
+  const int font_width = 5;
   
   switch(inst->original & 0x00FF)
   {
@@ -259,12 +261,34 @@ static void F(instruction_s* inst, object_s* o)
     rfile_index_write(o->rfile, rfile_index_read(o->rfile) + rfile_read(o->rfile, inst->n2));
     break;
   case 0x29: // LD F, Vx
+    rfile_index_write(o->rfile, FONT_START_ADDR + inst->n2 * font_width);
     break;
   case 0x33: // LD B, Vx
+    index = rfile_index_read(o->rfile);
+    vx = rfile_read(o->rfile, inst->n2);
+    offset = 2;
+    while (offset >= 0)
+    {
+      memory_write(o->memory, index + offset, vx % 10);
+      offset--;
+      vx /= 10;
+    }
     break;
   case 0x55: // LD [I], Vx
+    index = rfile_index_read(o->rfile);
+    for (i = 0; i <= inst->n2; i++)
+    {
+      vx = rfile_read(o->rfile, i);
+      memory_write(o->memory, index + i, vx);
+    }
     break;
   case 0x65: // LD Vx, [I]
+    index = rfile_index_read(o->rfile);
+    for (i = 0; i <= inst->n2; i++)
+    {
+      val = memory_read_byte(o->memory, index + i);
+      rfile_write(o->rfile, val, i);
+    }
     break;
   default:
     invalid_instruction(inst->original);

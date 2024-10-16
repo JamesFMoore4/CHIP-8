@@ -68,6 +68,12 @@ void display_set_bit(int x, int y, int val)
     display[indexv][indexh] &= ~bit_table[bit_index];
 }
 
+void display_draw_sprite(ptr start, byte n, byte x, byte y,
+			 memory_s* memory)
+{
+  
+}
+
 void display_clear(void)
 {
   memset(display, 0, sizeof(display));
