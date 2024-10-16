@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <time.h>
 
 #include "error.h"
 #include "stack.h"
@@ -44,6 +45,8 @@ int main(int argc, char** argv)
   
   InitWindow(SCR_WIDTH, SCR_HEIGHT, "CHIP-8");
   SetTargetFPS(60);
+
+  srand(time(NULL));
   
   while (!WindowShouldClose())
   {
@@ -101,6 +104,7 @@ static void decode(instruction_s* decoded_instr, instr instruction)
   b2 = (byte)instruction;
 
   // These must be logical shifts, or bugs will occur
+  decoded_instr->original = instruction;
   decoded_instr->n1 = (b1 & 0xF0) >> 4;
   decoded_instr->n2 = b1 & 0xF;
   decoded_instr->n3 = (b2 & 0xF0) >> 4;
@@ -109,6 +113,6 @@ static void decode(instruction_s* decoded_instr, instr instruction)
 
 static void execute(instruction_s* decoded_instr, object_s* objects)
 {
-  assert(decoded_instr->n1 >= 0x0 && decoded_instr->n2 <= 0xF && "Invalid instruction code.");
+  assert(decoded_instr->n1 >= 0x0 && decoded_instr->n1 <= 0xF && "Invalid instruction code.");
   exec[decoded_instr->n1](decoded_instr, objects);
 }

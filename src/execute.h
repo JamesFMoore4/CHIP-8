@@ -15,6 +15,7 @@
 
 typedef struct instruction_s
 {
+  instr original;
   byte n1, n2, n3, n4; // nibbles 1, 2, 3, 4, most sig -> least
 } instruction_s;
 

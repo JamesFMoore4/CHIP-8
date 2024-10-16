@@ -68,6 +68,11 @@ void display_set_bit(int x, int y, int val)
     display[indexv][indexh] &= ~bit_table[bit_index];
 }
 
+void display_clear(void)
+{
+  memset(display, 0, sizeof(display));
+}
+
 static int display_is_bit_set(byte val, int index)
 {
   display_check_bit_index(index);
