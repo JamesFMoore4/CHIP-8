@@ -21,4 +21,6 @@ void rfile_pc_write(rfile_s* rfile, ptr addr);
 ptr rfile_index_read(rfile_s* rfile);
 void rfile_index_write(rfile_s* rfile, ptr addr);
 
+void rfile_print(rfile_s* rfile);
+
 #endif

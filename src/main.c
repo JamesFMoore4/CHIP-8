@@ -52,10 +52,12 @@ int main(int argc, char** argv)
   {
     timer_update(objects.timer_sound);
     timer_update(objects.timer_delay);
-    /* instruction = fetch(objects.memory, objects.rfile); */
-    /* decode(&decoded_instr, instruction); */
-    /* execute(&decoded_instr, &objects); */
+    instruction = fetch(objects.memory, objects.rfile);
+    decode(&decoded_instr, instruction);
+    execute(&decoded_instr, &objects);
     display_draw();
+    if (DEBUG_MODE)
+      rfile_print(objects.rfile);
   }
   
   objects_free(&objects);
@@ -93,6 +95,10 @@ static instr fetch(memory_s* memory, rfile_s* rfile)
   addr = rfile_pc_read(rfile);
   instruction = memory_read_instruction(memory, addr);
   rfile_pc_write(rfile, addr + sizeof(addr));
+
+  if (DEBUG_MODE)
+    printf("%.4x\n", instruction);
+  
   return instruction;
 }
 
@@ -109,6 +115,9 @@ static void decode(instruction_s* decoded_instr, instr instruction)
   decoded_instr->n2 = b1 & 0xF;
   decoded_instr->n3 = (b2 & 0xF0) >> 4;
   decoded_instr->n4 = b2 & 0xF;
+
+  if (DEBUG_MODE)
+    printf("%x%x%x%x\n", decoded_instr->n1, decoded_instr->n2, decoded_instr->n3, decoded_instr->n4);
 }
 
 static void execute(instruction_s* decoded_instr, object_s* objects)

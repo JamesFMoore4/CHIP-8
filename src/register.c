@@ -58,6 +58,16 @@ void rfile_index_write(rfile_s* rfile, ptr addr)
   rfile->index = addr;
 }
 
+void rfile_print(rfile_s* rfile)
+{
+  int i;
+
+  for (i = 0; i <= 0xF; i++)
+    printf("V%x: %d %x\n", i, rfile->registers[i], rfile->registers[i]);
+  printf("PC: %d %x\n", rfile->pc, rfile->pc);
+  printf("I: %d %x\n", rfile->index, rfile->index);
+}
+
 static void rfile_check_index(int index)
 {
   if (index < 0 || index > NUM_REGISTERS - 1)

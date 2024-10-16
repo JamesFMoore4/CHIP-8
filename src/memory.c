@@ -94,7 +94,7 @@ void memory_load_file(memory_s* memory, FILE* bin)
   while ((char)(val = getc(bin)) != EOF && addr <= memory->last_byte)
     memory->addrspace[addr++] = val;
 
-  if (!feof(bin))
+  if (addr > memory->last_byte)
     error("error: input file too large.", 1);
 }
 

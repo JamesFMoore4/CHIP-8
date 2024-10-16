@@ -69,9 +69,47 @@ void display_set_bit(int x, int y, int val)
 }
 
 void display_draw_sprite(ptr start, byte n, byte x, byte y,
-			 memory_s* memory)
+			 memory_s* memory, rfile_s* rfile)
 {
+  int i, j, fset, bitset, valset;
+  byte val, temp;
   
+  x %= C8_SCR_WIDTH;
+  y %= C8_SCR_HEIGHT;
+
+  rfile_write(rfile, 0, 0xF);
+
+  fset = 0;
+
+  for (i = 0; i < n; i++)
+  {
+    if (y > C8_SCR_HEIGHT - 1)
+      break;
+    val = memory_read_byte(memory, start + i);
+    temp = x;
+    for (j = 0; j < 8; j++)
+    {
+      if (x > C8_SCR_WIDTH - 1)
+	break;
+      
+      if ((bitset = display_is_bit_set(display[y/8][x/8], x - (x/8 * 8))) && !fset)
+      {
+	fset = 1;
+	rfile_write(rfile, 1, 0xF);
+      }
+
+      valset = display_is_bit_set(val, j);
+
+      if (!bitset && valset)
+	display_set_bit(x, y, 1);
+      else if (bitset && valset)
+	display_set_bit(x, y, 0);
+
+      x++;
+    }
+    x = temp;
+    y++;
+  }
 }
 
 void display_clear(void)

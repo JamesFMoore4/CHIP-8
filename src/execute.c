@@ -54,9 +54,9 @@ static void o(instruction_s* inst, object_s* o)
 {
   ptr addr;
 
-  addr = inst->original & ~0xF000;
+  addr = inst->original & 0x0FFF;
 
-  if (!addr || addr & 0xF000 || addr % 2)
+  if (!addr || addr % 2)
     error("error: attempted to jump to invalid address.", 1);
 
   rfile_pc_write(o->rfile, addr); // JP addr
@@ -211,7 +211,7 @@ static void C(instruction_s* inst, object_s* o)
 static void D(instruction_s* inst, object_s* o)
 {
   display_draw_sprite(rfile_index_read(o->rfile), inst->n4, rfile_read(o->rfile, inst->n2),
-		      rfile_read(o->rfile, inst->n3), o->memory);
+		      rfile_read(o->rfile, inst->n3), o->memory, o->rfile);
 }
 
 static void E(instruction_s* inst, object_s* o)
@@ -297,7 +297,7 @@ static void F(instruction_s* inst, object_s* o)
 
 static void invalid_instruction(instr instruction)
 {
-  fprintf(stderr, "error: invalid instruction '%.2x'.\n",
+  fprintf(stderr, "error: invalid instruction '%.4x'.\n",
 	  instruction);
   exit(1);
 }
