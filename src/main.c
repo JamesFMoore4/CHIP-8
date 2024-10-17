@@ -50,16 +50,8 @@ int main(int argc, char** argv)
 
   srand(time(NULL));
 
-  memory_print_addr_space(objects.memory);
-
   while (!WindowShouldClose())
   {
-    if (DEBUG_MODE)
-    {
-      rfile_print(objects.rfile);
-      display_print_debug_info();
-    }
-
     timer_update(objects.timer_sound);
     timer_update(objects.timer_delay);
     instruction = fetch(objects.memory, objects.rfile);

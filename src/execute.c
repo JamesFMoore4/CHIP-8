@@ -210,8 +210,14 @@ static void C(instruction_s* inst, object_s* o)
 
 static void D(instruction_s* inst, object_s* o)
 {
-  display_draw_sprite(rfile_index_read(o->rfile), inst->n4, rfile_read(o->rfile, inst->n2),
-		      rfile_read(o->rfile, inst->n3), o->memory, o->rfile);
+  ptr start;
+  byte x, y;
+
+  start = rfile_index_read(o->rfile);
+  x = rfile_read(o->rfile, inst->n2);
+  y = rfile_read(o->rfile, inst->n3);
+
+  display_draw_sprite(start, inst->n4, x, y, o->memory, o->rfile);
 }
 
 static void E(instruction_s* inst, object_s* o)
@@ -259,6 +265,7 @@ static void F(instruction_s* inst, object_s* o)
     break;
   case 0x1E: // ADD I, Vx
     rfile_index_write(o->rfile, rfile_index_read(o->rfile) + rfile_read(o->rfile, inst->n2));
+    rfile_write(o->rfile, rfile_index_read(o->rfile) & 0xF000 ? 1 : 0, 0xF); // overflow in I?
     break;
   case 0x29: // LD F, Vx
     rfile_index_write(o->rfile, FONT_START_ADDR + inst->n2 * font_width);

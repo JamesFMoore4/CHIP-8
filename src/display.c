@@ -37,14 +37,12 @@ void display_draw(void)
 
 void display_draw_sprite(ptr start, byte n, byte x, byte y,
 			 memory_s* memory, rfile_s* rfile)
-{
+{ 
   int i, j;
-  byte* arr, val, temp;
+  byte arr[8], val, temp;
   
   x %= C8_SCR_WIDTH;
   y %= C8_SCR_HEIGHT;
-
-  rfile_write(rfile, 0, 0xF);
 
   for (i = 0; i < n; i++)
   {
@@ -52,7 +50,7 @@ void display_draw_sprite(ptr start, byte n, byte x, byte y,
     display_convert_to_array(arr, val);
     temp = x;
     
-    for (j = 0; j < 8; j++)
+    for (j = 7; j >= 0; j--)
     {
       if (display[y][x] && arr[j])
 	rfile_write(rfile, 1, 0xF);
