@@ -45,7 +45,7 @@ memory_s* memory_init()
   memory->font_start = FONT_START_ADDR;
   memcpy(memory->addrspace + memory->font_start, font_data, sizeof(font_data)); // load font data
   
-  return memory;  
+  return memory;
 }
 
 void memory_free(memory_s* memory)
@@ -56,19 +56,19 @@ void memory_free(memory_s* memory)
 
 instr memory_read_instruction(memory_s* memory, ptr addr)
 {
-  instr* fetch;
+  instr fetch;
   
   check_addr(addr, "error: attempted to read from invalid address.");
   if (addr % 2)
     error("error: invalid instruction address.", 1);
 
-  fetch = (instr*) &memory->addrspace[addr]; // Fetch two bytes instead of one
+  fetch = *(instr*) &memory->addrspace[addr]; // Fetch two bytes instead of one
 
   // Make sure that bytes are in proper order
   if (system_is_little_endian())
-    swap_bytes(fetch);
+    swap_bytes(&fetch);
   
-  return *fetch;
+  return fetch;
 }
 
 byte memory_read_byte(memory_s* memory, ptr addr)
@@ -87,15 +87,23 @@ void memory_write(memory_s* memory, ptr addr, byte val)
 
 void memory_load_file(memory_s* memory, FILE* bin)
 {
-  byte val;
+  int val;
   ptr addr;
 
   addr = memory->program_start;
-  while ((char)(val = getc(bin)) != EOF && addr <= memory->last_byte)
-    memory->addrspace[addr++] = val;
+  while ((val = fgetc(bin)) != EOF && addr <= memory->last_byte)
+    memory->addrspace[addr++] = (byte)val;
 
-  if (addr > memory->last_byte)
+  if (val != EOF)
     error("error: input file too large.", 1);
+}
+
+void memory_print_addr_space(memory_s* memory)
+{
+  ptr addr;
+
+  for (addr = memory->first_byte; addr <= memory->last_byte; addr++)
+    printf("0x%.2x: %.2x\n", addr, memory->addrspace[addr]);
 }
 
 static int system_is_little_endian(void)

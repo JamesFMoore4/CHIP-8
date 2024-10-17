@@ -12,7 +12,7 @@ $(BIN): $(OBJECTS)
 	@$(CC) $(CFLAGS) $(OBJECTS) -o $(BIN) $(CLIBS) $(INCLUDE) $(LIB)
 
 %.o: %.c
-	@$(CC) -c $^ -o $@
+	@$(CC) -c $^ -o $@ -g
 clean:
 	@rm $(OBJECTS) $(BIN) *~
 

@@ -17,4 +17,6 @@ byte memory_read_byte(memory_s* memory, ptr addr);
 void memory_write(memory_s* memory, ptr addr, byte val);
 void memory_load_file(memory_s* memory, FILE* bin);
 
+void memory_print_addr_space(memory_s* memory);
+
 #endif
