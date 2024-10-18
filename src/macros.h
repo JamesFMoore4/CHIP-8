@@ -20,6 +20,8 @@ typedef uint16_t instr;
 #define MAX_STACK_SIZE 16
 #define NUM_REGISTERS 16
 
+#define FPS 700
+
 #define DEBUG_MODE 0
 
 #endif

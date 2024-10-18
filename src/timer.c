@@ -11,6 +11,7 @@ typedef struct timer_s
   byte val;
   type_e type;
   update_f update;
+  float elapsed;
   Sound sound;
 } timer_s;
 
@@ -22,6 +23,7 @@ timer_s* timer_init(type_e type)
   timer->type = type;
   timer->val = 0;
   timer->update = timer_idle;
+  timer->elapsed = 0.0f;
   timer->sound = timer->type == SOUND ? LoadSound("../resources/sound.wav") : (Sound){0};
 
   return timer;
@@ -57,12 +59,25 @@ static void timer_idle(timer_s* timer)
 static void timer_sound(timer_s* timer)
 {
   PlaySound(timer->sound);
-  timer->val--;
+
+  timer->elapsed += GetFrameTime() * 1000;
+  if (timer->elapsed >= 16.67f)
+  {
+    timer->val--;
+    timer->elapsed = 0.0f;
+  }
+  
   timer->update = timer->val ? timer_sound : timer_idle;
 }
 
 static void timer_delay(timer_s* timer)
 {
-  timer->val--;
+  timer->elapsed += GetFrameTime() * 1000;
+  if (timer->elapsed >= 16.67f)
+  {
+    timer->val--;
+    timer->elapsed = 0.0f;
+  }
+    
   timer->update = timer->val ? timer_delay : timer_idle;
 }

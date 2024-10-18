@@ -46,7 +46,7 @@ int main(int argc, char** argv)
   fclose(bin);
   
   InitWindow(SCR_WIDTH, SCR_HEIGHT, "CHIP-8");
-  SetTargetFPS(60);
+  SetTargetFPS(FPS);
 
   srand(time(NULL));
 

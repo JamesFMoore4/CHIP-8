@@ -29,14 +29,6 @@ ptr stack_pop(stack_s* stack)
   return addr;
 }
 
-ptr stack_peek(stack_s* stack)
-{
-  if (!stack->num_items)
-    error("error: stack underflow.\n", 1);
-
-  return stack->buf[stack->top];
-}
-
 void stack_push(stack_s* stack, ptr addr)
 {
   if (stack->num_items == MAX_STACK_SIZE)

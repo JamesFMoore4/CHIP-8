@@ -2,8 +2,6 @@
 
 static byte display[C8_SCR_HEIGHT][C8_SCR_WIDTH] = {0};
 
-static void display_set_pixel(byte x, byte y, int white);
-static void display_check_pixel_index(byte x, byte y);
 static void display_convert_to_array(byte* dest, byte val);
 
 void display_draw(void)
@@ -83,18 +81,6 @@ void display_print_debug_info(void)
     }
     printf("\n");
   }
-}
-
-static void display_set_pixel(byte x, byte y, int white)
-{
-  display_check_pixel_index(x, y);
-  display[y][x] = white ? -1 : 0;
-}
-
-static void display_check_pixel_index(byte x, byte y)
-{
-  if (x < 0 || x > C8_SCR_WIDTH-1 || y < 0 || y > C8_SCR_HEIGHT-1)
-    error("Invalid display index.", 1);
 }
 
 static void display_convert_to_array(byte* dest, byte val)

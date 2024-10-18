@@ -10,7 +10,6 @@ typedef struct stack_s stack_s;
 
 stack_s* stack_init();
 ptr stack_pop(stack_s* stack);
-ptr stack_peek(stack_s* stack);
 void stack_push(stack_s* stack, ptr addr);
 void stack_free(stack_s* stack);
 
